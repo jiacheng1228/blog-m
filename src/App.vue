@@ -1,10 +1,14 @@
 <template>
   <div id="app">
-    头条
-    <van-button type="primary">主要按钮</van-button>
-    <router-view />
+    <!-- 路由的出口 -->
+    <router-view/>
   </div>
 </template>
 
-<style lang="less">
-</style>
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style lang="less"></style>
