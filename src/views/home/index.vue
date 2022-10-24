@@ -8,6 +8,7 @@
         size="small"
         round
         icon="search"
+        to="/search"
         >搜索</van-button
       >
     </van-nav-bar>
@@ -23,29 +24,50 @@
         <ArticleList :channel="channel"/>
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburage-btn">
+      <div slot="nav-right" class="hamburage-btn" @click="isChannelEidtShow=true">
         <i class="iconfont icon-gengduo"></i>
       </div>
     </van-tabs>
+
+    <!--  频道编辑弹出层 -->
+    <van-popup
+      v-model="isChannelEidtShow"
+      closeable
+      close-icon-position="top-left"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <ChannelEdit
+      :my_channels="userChannels"
+      :active="active"
+      @update-active="onUpdateActive"/>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list.vue'
+import ChannelEdit from './components/channel-edit.vue'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   props: {},
   data () {
     return {
       active: 2,
-      userChannels: []
+      userChannels: [],
+      isChannelEidtShow: false
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
   created () {
     this.loadChannels()
@@ -54,12 +76,28 @@ export default {
   methods: {
     async loadChannels () {
       try {
-        const { data } = await getUserChannels()
-        this.userChannels = data.data.channels
-        console.log(data)
+        let userChannels = []
+        if (this.user) {
+          const { data } = await getUserChannels()
+          userChannels = data.data.channels
+        } else {
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          if (localChannels) {
+            userChannels = localChannels
+          } else {
+            const { data } = await getUserChannels()
+            userChannels = data.data.channels
+          }
+        }
+        this.userChannels = userChannels
       } catch (error) {
-        this.$$toast('获取用户频道失败')
+        this.$toast('加载用户频道失败', error)
       }
+    },
+    onUpdateActive (index, isChannelEidtShow = true) {
+      // console.log('home', index)
+      this.active = index
+      this.isChannelEidtShow = isChannelEidtShow
     }
   }
 }
