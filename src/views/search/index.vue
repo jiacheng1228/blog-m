@@ -1,30 +1,30 @@
 <template>
   <div class="search-container">
     <form action="/">
-    <van-search
-        v-model="value"
+      <van-search
+        v-model="searchText"
         show-action
         placeholder="请输入搜索关键词"
         background="#3296fa"
         @search="onSearch"
         @cancel="onCancel"
-    />
+        @focus="isShowResult = false"
+      />
     </form>
+
+    <!-- 搜索结果 -->
+    <search-result v-if="isShowResult" />
+    <!-- /搜索结果 -->
 
     <!-- 联想建议 -->
     <search-suggestion
-    />
+    v-else-if="searchText"
+    :searchText = "searchText"/>
     <!-- /联想建议 -->
 
     <!-- 搜索历史记录 -->
-    <search-history  />
+    <search-history v-else />
     <!-- /搜索历史记录 -->
-
-    <!-- 搜索结果 -->
-    <search-result
-
-    />
-    <!-- /搜索结果 -->
   </div>
 </template>
 
@@ -33,11 +33,11 @@ import SearchHistory from './components/search-history.vue'
 import SearchSuggestion from './components/search-suggestion.vue'
 import SearchResult from './components/search-result.vue'
 export default {
-
   name: 'SearchIndex',
   data () {
     return {
-      value: ''
+      isShowResult: false,
+      searchText: ''
     }
   },
   components: {
@@ -48,15 +48,14 @@ export default {
   methods: {
     onSearch (val) {
       this.$toast(val)
+      this.isShowResult = true
     },
     onCancel () {
       this.$router.back()
     }
   }
-
 }
 </script>
 
 <style>
-
 </style>

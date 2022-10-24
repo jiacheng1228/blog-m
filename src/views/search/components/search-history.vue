@@ -1,6 +1,6 @@
 <template>
  <div class="search-history">
-    <van-cell title="搜索"  >
+    <van-cell title="搜索历史"  >
         <span>全部删除</span>
         <span>完成</span>
     </van-cell>
