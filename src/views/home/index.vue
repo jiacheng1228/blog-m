@@ -68,7 +68,6 @@ export default {
   computed: {
     ...mapState(['user'])
   },
-  watch: {},
   created () {
     this.loadChannels()
   },

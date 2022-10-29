@@ -105,10 +105,6 @@ export default {
       isCountDownShow: false // 是否展示倒计时
     }
   },
-  computed: {},
-  watch: {},
-  created () {},
-  mounted () {},
   methods: {
     async onSubmit () {
       // 1. 展示登陆中 loading

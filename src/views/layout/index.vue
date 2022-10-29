@@ -38,12 +38,7 @@ export default {
   data () {
     return {
     }
-  },
-  computed: {},
-  watch: {},
-  created () {},
-  mounted () {},
-  methods: {}
+  }
 }
 </script>
 

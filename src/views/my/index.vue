@@ -88,7 +88,6 @@ export default {
   computed: {
     ...mapState(['user'])
   },
-  watch: {},
   created () {
     // 如果用户登录了，则请求加载用户信息数据
     if (this.user) {
