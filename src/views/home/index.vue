@@ -60,7 +60,7 @@ export default {
   props: {},
   data () {
     return {
-      active: 2,
+      active: 0,
       userChannels: [],
       isChannelEidtShow: false
     }
@@ -71,7 +71,6 @@ export default {
   created () {
     this.loadChannels()
   },
-  mounted () {},
   methods: {
     async loadChannels () {
       try {

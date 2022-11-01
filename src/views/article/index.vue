@@ -72,15 +72,34 @@
           v-html="article.content"
           ref="article-content"
         ></div>
+         <!-- 文章内容 -->
+
         <van-divider>正文结束</van-divider>
+
+        <!-- 评论展示区 -->
+        <comment-list
+          :source = "this.article.art_id"
+          @onload-success = "totalCommentCount = $event.total_count"
+          :comment_list="commentList"
+        />
+        <!-- 评论展示区 -->
 
         <!-- 底部区域 -->
         <!-- 放在加载完成里面 因为刚开始的时候 还没有发送请求 获取不了article -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+            @click="isPostShow = true"
             >写评论</van-button
           >
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-icon
+            name="comment-o"
+            :info="totalCommentCount"
+            color="#777"
+          />
           <!-- <van-icon color="#777" name="star-o" /> -->
           <CollectArticle
             class="btn-item"
@@ -96,6 +115,20 @@
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
+
+        <!-- 发布评论 -->
+        <van-popup
+          v-model="isPostShow"
+          position="bottom"
+        >
+
+          <comment-post
+            :target="article.art_id"
+            @post-success="onPostSuccess"
+          />
+        </van-popup>
+        <!-- 发布评论 -->
+
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -124,6 +157,8 @@ import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-item'
+import CommentList from './components/comment-list.vue'
+import CommentPost from './components/comment-post.vue'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -131,13 +166,18 @@ export default {
       article: {},
       loading: true, // 加载中状态
       errStatus: 0,
-      followLoading: false
+      followLoading: false,
+      totalCommentCount: 0,
+      isPostShow: false,
+      commentList: []
     }
   },
   components: {
     FollowUser,
     CollectArticle,
-    LikeArticle
+    LikeArticle,
+    CommentList,
+    CommentPost
   },
   props: {
     articleId: {
@@ -163,7 +203,6 @@ export default {
         //   this.previewImage()
         // })
         setTimeout(() => {
-          console.log(this)
           this.previewImage()
         }, 0)
         // console.log('@文章详情', data)
@@ -192,8 +231,7 @@ export default {
           })
         }
       })
-      // console.log('@imgUrls', imgSrc)
-    }
+    },
     // async onfollow () {
     //   this.followLoading = true
     //   try {
@@ -213,6 +251,14 @@ export default {
     //   }
     //   this.followLoading = false
     // }
+    onPostSuccess (data) {
+      // 关闭弹出层
+      this.isPostShow = false
+      // 将发布内容显示到列表顶部
+      this.commentList.unshift(data.new_obj)
+      // console.log('onpostsuccess', this.commentList)
+      this.totalCommentCount++
+    }
   }
 }
 </script>
